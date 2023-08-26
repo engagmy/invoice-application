@@ -1,0 +1,28 @@
+{
+  "name": "SupplierItem",
+  "fields": [],
+  "relationships": [
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "supplier",
+      "otherEntityRelationshipName": "supplierItem",
+      "relationshipName": "supplier"
+    },
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "item",
+      "otherEntityRelationshipName": "supplierItem",
+      "relationshipName": "item"
+    }
+  ],
+  "entityTableName": "supplier_item",
+  "dto": "mapstruct",
+  "pagination": "no",
+  "service": "serviceClass",
+  "jpaMetamodelFiltering": true,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "applications": ["invoice"],
+  "changelogDate": "20230826195538"
+}
