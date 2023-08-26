@@ -1,16 +1,13 @@
 import { Component } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
-import SharedModule from 'app/shared/shared.module';
 import { HealthKey, HealthDetails } from '../health.model';
 
 @Component({
-  standalone: true,
-  selector: 'jhi-health-modal',
+  selector: 'inv-health-modal',
   templateUrl: './health-modal.component.html',
-  imports: [SharedModule],
 })
-export default class HealthModalComponent {
+export class HealthModalComponent {
   health?: { key: HealthKey; value: HealthDetails };
 
   constructor(private activeModal: NgbActiveModal) {}
@@ -20,15 +17,17 @@ export default class HealthModalComponent {
       // Should display storage space in an human readable unit
       const val = value / 1073741824;
       if (val > 1) {
-        return `${val.toFixed(2)} GB`;
+        return val.toFixed(2) + ' GB';
+      } else {
+        return (value / 1048576).toFixed(2) + ' MB';
       }
-      return `${(value / 1048576).toFixed(2)} MB`;
     }
 
     if (typeof value === 'object') {
       return JSON.stringify(value);
+    } else {
+      return String(value);
     }
-    return String(value);
   }
 
   dismiss(): void {

@@ -1,6 +1,6 @@
 @import 'bootstrap-variables';
-@import 'bootstrap/scss/functions';
-@import 'bootstrap/scss/variables';
+@import '~bootstrap/scss/functions';
+@import '~bootstrap/scss/variables';
 
 /* ==============================================================
 Bootstrap tweaks
@@ -97,10 +97,6 @@ Generic styles
   word-break: break-all;
 }
 
-.form-control {
-  background-color: #fff;
-}
-
 .readonly {
   background-color: #eee;
   opacity: 1;
@@ -111,7 +107,7 @@ Generic styles
 }
 
 .hand,
-[jhisortby] {
+[invsortby] {
   cursor: pointer;
 }
 
@@ -155,14 +151,6 @@ Custom alerts for notification
   .alerts .jhi-toast {
     width: 50%;
   }
-}
-
-/* ==========================================================================
-entity list page css
-========================================================================== */
-
-.table-entities thead th .d-flex > * {
-  margin: auto 0;
 }
 
 /* ==========================================================================
@@ -211,29 +199,4 @@ ui bootstrap tweaks
   white-space: nowrap;
 }
 
-.dropdown-menu {
-  padding-left: 0px;
-}
-
-/* ==========================================================================
-angular-cli removes postcss-rtl processed inline css, processed rules must be added here instead
-========================================================================== */
-/* page-ribbon.component.scss */
-.ribbon {
-  left: -3.5em;
-  -moz-transform: rotate(-45deg);
-  -ms-transform: rotate(-45deg);
-  -o-transform: rotate(-45deg);
-  -webkit-transform: rotate(-45deg);
-  transform: rotate(-45deg);
-}
-
-/* navbar.component.scss */
-.navbar {
-  ul.navbar-nav {
-    .nav-item {
-      margin-left: 0.5em;
-    }
-  }
-}
 /* jhipster-needle-scss-add-main JHipster will add new css style */

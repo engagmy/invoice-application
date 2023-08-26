@@ -1,0 +1,40 @@
+<div class="row justify-content-center">
+  <div class="col-8">
+    <div *ngIf="supplierItem">
+      <h2 data-cy="supplierItemDetailsHeading"><span invTranslate="invoiceApp.supplierItem.detail.title">Supplier Item</span></h2>
+
+      <hr />
+
+      <inv-alert-error></inv-alert-error>
+
+      <inv-alert></inv-alert>
+
+      <dl class="row-md jh-entity-details">
+        <dt><span invTranslate="global.field.id">ID</span></dt>
+        <dd>
+          <span>{{ supplierItem.id }}</span>
+        </dd>
+        <dt><span invTranslate="invoiceApp.supplierItem.supplier">Supplier</span></dt>
+        <dd>
+          <div *ngIf="supplierItem.supplier">
+            <a [routerLink]="['/supplier', supplierItem.supplier?.id, 'view']">{{ supplierItem.supplier?.id }}</a>
+          </div>
+        </dd>
+        <dt><span invTranslate="invoiceApp.supplierItem.item">Item</span></dt>
+        <dd>
+          <div *ngIf="supplierItem.item">
+            <a [routerLink]="['/item', supplierItem.item?.id, 'view']">{{ supplierItem.item?.id }}</a>
+          </div>
+        </dd>
+      </dl>
+
+      <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+        <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span invTranslate="entity.action.back">Back</span>
+      </button>
+
+      <button type="button" [routerLink]="['/supplier-item', supplierItem.id, 'edit']" class="btn btn-primary">
+        <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span invTranslate="entity.action.edit">Edit</span>
+      </button>
+    </div>
+  </div>
+</div>

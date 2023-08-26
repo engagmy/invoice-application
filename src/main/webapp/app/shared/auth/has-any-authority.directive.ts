@@ -10,16 +10,15 @@ import { AccountService } from 'app/core/auth/account.service';
  *
  * @howToUse
  * ```
- *     <some-element *jhiHasAnyAuthority="'ROLE_ADMIN'">...</some-element>
+ *     <some-element *invHasAnyAuthority="'ROLE_ADMIN'">...</some-element>
  *
- *     <some-element *jhiHasAnyAuthority="['ROLE_ADMIN', 'ROLE_USER']">...</some-element>
+ *     <some-element *invHasAnyAuthority="['ROLE_ADMIN', 'ROLE_USER']">...</some-element>
  * ```
  */
 @Directive({
-  standalone: true,
-  selector: '[jhiHasAnyAuthority]',
+  selector: '[invHasAnyAuthority]',
 })
-export default class HasAnyAuthorityDirective implements OnDestroy {
+export class HasAnyAuthorityDirective implements OnDestroy {
   private authorities!: string | string[];
 
   private readonly destroy$ = new Subject<void>();
@@ -27,7 +26,7 @@ export default class HasAnyAuthorityDirective implements OnDestroy {
   constructor(private accountService: AccountService, private templateRef: TemplateRef<any>, private viewContainerRef: ViewContainerRef) {}
 
   @Input()
-  set jhiHasAnyAuthority(value: string | string[]) {
+  set invHasAnyAuthority(value: string | string[]) {
     this.authorities = value;
     this.updateView();
     // Get notified each time authentication state changes.

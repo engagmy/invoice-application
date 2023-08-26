@@ -1,12 +1,17 @@
 {
   "global": {
-    "title": "InvoiceApplication",
+    "title": "Invoice",
     "browsehappy": "You are using an <strong>outdated</strong> browser. Please <a href=\"http://browsehappy.com/?locale=en\">upgrade your browser</a> to improve your experience.",
     "menu": {
       "home": "Home",
       "jhipster-needle-menu-add-element": "JHipster will add additional menu entries here (do not translate!)",
       "entities": {
         "main": "Entities",
+        "supplier": "Supplier",
+        "item": "Item",
+        "supplierItem": "Supplier Item",
+        "invoice": "Invoice",
+        "invoiceItem": "Invoice Item",
         "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
       },
       "account": {
@@ -97,8 +102,7 @@
       "edit": "Edit",
       "open": "Open",
       "save": "Save",
-      "view": "View",
-      "show": "Show {{otherEntity}}"
+      "view": "View"
     },
     "detail": {
       "field": "Field",
@@ -119,11 +123,6 @@
       "number": "This field should be a number.",
       "datetimelocal": "This field should be a date and time.",
       "patternLogin": "This field can only contain letters, digits and e-mail addresses."
-    },
-    "filters": {
-      "set": "Following filters are set",
-      "clear": "Clear filter",
-      "clearAll": "Clear all filters"
     }
   },
   "error": {

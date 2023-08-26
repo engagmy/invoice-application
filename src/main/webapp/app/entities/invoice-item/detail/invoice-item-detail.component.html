@@ -1,0 +1,44 @@
+<div class="row justify-content-center">
+  <div class="col-8">
+    <div *ngIf="invoiceItem">
+      <h2 data-cy="invoiceItemDetailsHeading"><span invTranslate="invoiceApp.invoiceItem.detail.title">Invoice Item</span></h2>
+
+      <hr />
+
+      <inv-alert-error></inv-alert-error>
+
+      <inv-alert></inv-alert>
+
+      <dl class="row-md jh-entity-details">
+        <dt><span invTranslate="global.field.id">ID</span></dt>
+        <dd>
+          <span>{{ invoiceItem.id }}</span>
+        </dd>
+        <dt><span invTranslate="invoiceApp.invoiceItem.value">Value</span></dt>
+        <dd>
+          <span>{{ invoiceItem.value }}</span>
+        </dd>
+        <dt><span invTranslate="invoiceApp.invoiceItem.invoice">Invoice</span></dt>
+        <dd>
+          <div *ngIf="invoiceItem.invoice">
+            <a [routerLink]="['/invoice', invoiceItem.invoice?.id, 'view']">{{ invoiceItem.invoice?.id }}</a>
+          </div>
+        </dd>
+        <dt><span invTranslate="invoiceApp.invoiceItem.item">Item</span></dt>
+        <dd>
+          <div *ngIf="invoiceItem.item">
+            <a [routerLink]="['/item', invoiceItem.item?.id, 'view']">{{ invoiceItem.item?.id }}</a>
+          </div>
+        </dd>
+      </dl>
+
+      <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+        <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span invTranslate="entity.action.back">Back</span>
+      </button>
+
+      <button type="button" [routerLink]="['/invoice-item', invoiceItem.id, 'edit']" class="btn btn-primary">
+        <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span invTranslate="entity.action.edit">Edit</span>
+      </button>
+    </div>
+  </div>
+</div>

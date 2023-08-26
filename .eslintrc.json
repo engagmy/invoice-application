@@ -17,14 +17,14 @@
   "parserOptions": {
     "ecmaVersion": 2018,
     "sourceType": "module",
-    "project": ["./tsconfig.app.json", "./tsconfig.spec.json"]
+    "project": "./tsconfig.json"
   },
   "rules": {
     "@angular-eslint/component-selector": [
       "error",
       {
         "type": "element",
-        "prefix": "jhi",
+        "prefix": "inv",
         "style": "kebab-case"
       }
     ],
@@ -32,7 +32,7 @@
       "error",
       {
         "type": "attribute",
-        "prefix": "jhi",
+        "prefix": "inv",
         "style": "camelCase"
       }
     ],
@@ -74,7 +74,6 @@
     "@typescript-eslint/no-parameter-properties": ["warn", { "allows": ["public", "private", "protected"] }],
     "@typescript-eslint/no-shadow": ["error"],
     "@typescript-eslint/no-unnecessary-condition": "error",
-    "@typescript-eslint/no-unsafe-argument": "off",
     "@typescript-eslint/no-unsafe-assignment": "off",
     "@typescript-eslint/no-unsafe-call": "off",
     "@typescript-eslint/no-unsafe-member-access": "off",

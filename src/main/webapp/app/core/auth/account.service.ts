@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { TranslateService } from '@ngx-translate/core';
+import { SessionStorageService } from 'ngx-webstorage';
 import { Observable, ReplaySubject, of } from 'rxjs';
 import { shareReplay, tap, catchError } from 'rxjs/operators';
 
@@ -13,10 +14,11 @@ import { Account } from 'app/core/auth/account.model';
 export class AccountService {
   private userIdentity: Account | null = null;
   private authenticationState = new ReplaySubject<Account | null>(1);
-  private accountCache$?: Observable<Account> | null;
+  private accountCache$?: Observable<Account | null>;
 
   constructor(
     private translateService: TranslateService,
+    private sessionStorageService: SessionStorageService,
     private http: HttpClient,
     private stateStorageService: StateStorageService,
     private router: Router,
@@ -30,9 +32,6 @@ export class AccountService {
   authenticate(identity: Account | null): void {
     this.userIdentity = identity;
     this.authenticationState.next(this.userIdentity);
-    if (!identity) {
-      this.accountCache$ = null;
-    }
   }
 
   hasAnyAuthority(authorities: string[] | string): boolean {
@@ -46,24 +45,27 @@ export class AccountService {
   }
 
   identity(force?: boolean): Observable<Account | null> {
-    if (!this.accountCache$ || force) {
+    if (!this.accountCache$ || force || !this.isAuthenticated()) {
       this.accountCache$ = this.fetch().pipe(
-        tap((account: Account) => {
+        catchError(() => of(null)),
+        tap((account: Account | null) => {
           this.authenticate(account);
 
           // After retrieve the account info, the language will be changed to
           // the user's preferred language configured in the account setting
           // unless user have choosed other language in the current session
-          if (!this.stateStorageService.getLocale()) {
+          if (!this.sessionStorageService.retrieve('locale') && account) {
             this.translateService.use(account.langKey);
           }
 
-          this.navigateToStoredUrl();
+          if (account) {
+            this.navigateToStoredUrl();
+          }
         }),
         shareReplay()
       );
     }
-    return this.accountCache$.pipe(catchError(() => of(null)));
+    return this.accountCache$;
   }
 
   isAuthenticated(): boolean {

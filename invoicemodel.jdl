@@ -1,0 +1,61 @@
+application {
+    config {
+        baseName invoice-application
+        applicationType monolith
+        authenticationType session
+        clientFramework angular
+        jhiPrefix inv
+        languages [ar-ly, en]
+        nativeLanguage ar-ly
+        packageName com.agamy.invoice
+    }
+    entities Supplier,Item,SupplierItem,Invoice,InvoiceItem
+    // Set pagination options
+    paginate Supplier with pagination
+    paginate Item with pagination
+    paginate Invoice with pagination
+    service * with serviceClass
+    filter *
+
+    // Use Data Transfer Objects (DTO)
+    dto * with mapstruct
+}
+
+
+entity Supplier {
+    name String required
+}
+
+entity Item {
+    name String required
+    active Boolean
+}
+
+entity SupplierItem {
+}
+
+entity Invoice {
+    number String required
+    value BigDecimal required
+}
+
+entity InvoiceItem {
+    value BigDecimal required
+}
+
+
+
+relationship ManyToOne {
+    InvoiceItem{invoice} to Invoice
+    InvoiceItem{item} to Item
+    SupplierItem{supplier} to Supplier
+    SupplierItem{item} to Item
+}
+
+
+
+// Set service options to all except few
+//service all
+
+// Set an angular suffix
+// angularSuffix * with mySuffix

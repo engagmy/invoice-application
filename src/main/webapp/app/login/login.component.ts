@@ -1,30 +1,32 @@
 import { Component, ViewChild, OnInit, AfterViewInit, ElementRef } from '@angular/core';
-import { FormGroup, FormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
+import { FormBuilder, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 
-import SharedModule from 'app/shared/shared.module';
 import { LoginService } from 'app/login/login.service';
 import { AccountService } from 'app/core/auth/account.service';
 
 @Component({
-  selector: 'jhi-login',
-  standalone: true,
-  imports: [SharedModule, FormsModule, ReactiveFormsModule, RouterModule],
+  selector: 'inv-login',
   templateUrl: './login.component.html',
 })
-export default class LoginComponent implements OnInit, AfterViewInit {
+export class LoginComponent implements OnInit, AfterViewInit {
   @ViewChild('username', { static: false })
   username!: ElementRef;
 
   authenticationError = false;
 
-  loginForm = new FormGroup({
-    username: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
-    password: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
-    rememberMe: new FormControl(false, { nonNullable: true, validators: [Validators.required] }),
+  loginForm = this.fb.group({
+    username: [null, [Validators.required]],
+    password: [null, [Validators.required]],
+    rememberMe: [false],
   });
 
-  constructor(private accountService: AccountService, private loginService: LoginService, private router: Router) {}
+  constructor(
+    private accountService: AccountService,
+    private loginService: LoginService,
+    private router: Router,
+    private fb: FormBuilder
+  ) {}
 
   ngOnInit(): void {
     // if already authenticated then navigate to home page
@@ -40,15 +42,21 @@ export default class LoginComponent implements OnInit, AfterViewInit {
   }
 
   login(): void {
-    this.loginService.login(this.loginForm.getRawValue()).subscribe({
-      next: () => {
-        this.authenticationError = false;
-        if (!this.router.getCurrentNavigation()) {
-          // There were no routing during login (eg from navigationToStoredUrl)
-          this.router.navigate(['']);
-        }
-      },
-      error: () => (this.authenticationError = true),
-    });
+    this.loginService
+      .login({
+        username: this.loginForm.get('username')!.value,
+        password: this.loginForm.get('password')!.value,
+        rememberMe: this.loginForm.get('rememberMe')!.value,
+      })
+      .subscribe(
+        () => {
+          this.authenticationError = false;
+          if (!this.router.getCurrentNavigation()) {
+            // There were no routing during login (eg from navigationToStoredUrl)
+            this.router.navigate(['']);
+          }
+        },
+        () => (this.authenticationError = true)
+      );
   }
 }

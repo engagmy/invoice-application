@@ -1,44 +1,42 @@
 <div>
   <h2>
-    <span id="user-management-page-heading" jhiTranslate="userManagement.home.title" data-cy="userManagementPageHeading">المستخدمين</span>
+    <span id="user-management-page-heading" invTranslate="userManagement.home.title" data-cy="userManagementPageHeading">Users</span>
 
     <div class="d-flex justify-content-end">
-      <button class="btn btn-info me-2" (click)="loadAll()" [disabled]="isLoading">
+      <button class="btn btn-info mr-2" (click)="loadAll()" [disabled]="isLoading">
         <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
-        <span jhiTranslate="userManagement.home.refreshListLabel">Refresh list</span>
+        <span invTranslate="userManagement.home.refreshListLabel">Refresh List</span>
       </button>
       <button class="btn btn-primary jh-create-entity" [routerLink]="['./new']">
-        <fa-icon icon="plus"></fa-icon> <span jhiTranslate="userManagement.home.createLabel">إنشاء مستخدم جديد</span>
+        <fa-icon icon="plus"></fa-icon> <span invTranslate="userManagement.home.createLabel">Create a new User</span>
       </button>
     </div>
   </h2>
 
-  <jhi-alert-error></jhi-alert-error>
+  <inv-alert-error></inv-alert-error>
 
-  <jhi-alert></jhi-alert>
+  <inv-alert></inv-alert>
 
   <div class="table-responsive" *ngIf="users">
     <table class="table table-striped" aria-describedby="user-management-page-heading">
       <thead>
-        <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" (sortChange)="transition()">
-          <th scope="col" jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="login">
-            <span jhiTranslate="userManagement.login">تسجيل الدخول</span> <fa-icon icon="sort"></fa-icon>
-          </th>
-          <th scope="col" jhiSortBy="email">
-            <span jhiTranslate="userManagement.email">البريد الإلكتروني</span> <fa-icon icon="sort"></fa-icon>
-          </th>
+        <tr invSort [(predicate)]="predicate" [(ascending)]="ascending" [callback]="transition.bind(this)">
+          <th scope="col" invSortBy="id"><span invTranslate="global.field.id">ID</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col" invSortBy="login"><span invTranslate="userManagement.login">Login</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col" invSortBy="email"><span invTranslate="userManagement.email">Email</span> <fa-icon icon="sort"></fa-icon></th>
           <th scope="col"></th>
-          <th scope="col" jhiSortBy="langKey"><span jhiTranslate="userManagement.langKey">لغة</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col"><span jhiTranslate="userManagement.profiles">الملفات الشخصية</span></th>
-          <th scope="col" jhiSortBy="createdDate">
-            <span jhiTranslate="userManagement.createdDate">تاريخ الإنشاء</span> <fa-icon icon="sort"></fa-icon>
+          <th scope="col" invSortBy="langKey">
+            <span invTranslate="userManagement.langKey">Lang Key</span> <fa-icon icon="sort"></fa-icon>
           </th>
-          <th scope="col" jhiSortBy="lastModifiedBy">
-            <span jhiTranslate="userManagement.lastModifiedBy">عدل من قبل</span> <fa-icon icon="sort"></fa-icon>
+          <th scope="col"><span invTranslate="userManagement.profiles">Profiles</span></th>
+          <th scope="col" invSortBy="createdDate">
+            <span invTranslate="userManagement.createdDate">Created Date</span> <fa-icon icon="sort"></fa-icon>
           </th>
-          <th scope="col" jhiSortBy="lastModifiedDate">
-            <span jhiTranslate="userManagement.lastModifiedDate">تاريخ التعديل</span> <fa-icon icon="sort"></fa-icon>
+          <th scope="col" invSortBy="lastModifiedBy">
+            <span invTranslate="userManagement.lastModifiedBy">Last Modified By</span> <fa-icon icon="sort"></fa-icon>
+          </th>
+          <th scope="col" invSortBy="lastModifiedDate">
+            <span invTranslate="userManagement.lastModifiedDate">Last Modified Date</span> <fa-icon icon="sort"></fa-icon>
           </th>
           <th scope="col"></th>
         </tr>
@@ -55,39 +53,39 @@
               class="btn btn-danger btn-sm"
               (click)="setActive(user, true)"
               *ngIf="!user.activated"
-              jhiTranslate="userManagement.deactivated"
+              invTranslate="userManagement.deactivated"
             >
-              غير مفعل
+              Deactivated
             </button>
             <button
               class="btn btn-success btn-sm"
               (click)="setActive(user, false)"
               *ngIf="user.activated"
               [disabled]="!currentAccount || currentAccount.login === user.login"
-              jhiTranslate="userManagement.activated"
+              invTranslate="userManagement.activated"
             >
-              مفعل
+              Activated
             </button>
           </td>
           <td>{{ user.langKey }}</td>
           <td>
             <div *ngFor="let authority of user.authorities">
-              <span class="badge bg-info">{{ authority }}</span>
+              <span class="badge badge-info">{{ authority }}</span>
             </div>
           </td>
-          <td>{{ user.createdDate | date : 'dd/MM/yy HH:mm' }}</td>
+          <td>{{ user.createdDate | date: 'dd/MM/yy HH:mm' }}</td>
           <td>{{ user.lastModifiedBy }}</td>
-          <td>{{ user.lastModifiedDate | date : 'dd/MM/yy HH:mm' }}</td>
-          <td class="text-end">
+          <td>{{ user.lastModifiedDate | date: 'dd/MM/yy HH:mm' }}</td>
+          <td class="text-right">
             <div class="btn-group">
               <button type="submit" [routerLink]="['./', user.login, 'view']" class="btn btn-info btn-sm">
                 <fa-icon icon="eye"></fa-icon>
-                <span class="d-none d-md-inline" jhiTranslate="entity.action.view">عرض</span>
+                <span class="d-none d-md-inline" invTranslate="entity.action.view">View</span>
               </button>
 
               <button type="submit" [routerLink]="['./', user.login, 'edit']" queryParamsHandling="merge" class="btn btn-primary btn-sm">
                 <fa-icon icon="pencil-alt"></fa-icon>
-                <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">تعديل</span>
+                <span class="d-none d-md-inline" invTranslate="entity.action.edit">Edit</span>
               </button>
 
               <button
@@ -97,7 +95,7 @@
                 [disabled]="!currentAccount || currentAccount.login === user.login"
               >
                 <fa-icon icon="times"></fa-icon>
-                <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">حذف</span>
+                <span class="d-none d-md-inline" invTranslate="entity.action.delete">Delete</span>
               </button>
             </div>
           </td>
@@ -107,11 +105,11 @@
   </div>
 
   <div *ngIf="users">
-    <div class="d-flex justify-content-center">
-      <jhi-item-count [params]="{ page: page, totalItems: totalItems, itemsPerPage: itemsPerPage }"></jhi-item-count>
+    <div class="row justify-content-center">
+      <inv-item-count [params]="{ page: page, totalItems: totalItems, itemsPerPage: itemsPerPage }"></inv-item-count>
     </div>
 
-    <div class="d-flex justify-content-center">
+    <div class="row justify-content-center">
       <ngb-pagination
         [collectionSize]="totalItems"
         [(page)]="page"

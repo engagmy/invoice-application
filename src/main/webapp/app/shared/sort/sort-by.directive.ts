@@ -4,16 +4,15 @@ import { takeUntil } from 'rxjs/operators';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { faSort, faSortDown, faSortUp, IconDefinition } from '@fortawesome/free-solid-svg-icons';
 
-import SortDirective from './sort.directive';
+import { SortDirective } from './sort.directive';
 
 @Directive({
-  standalone: true,
-  selector: '[jhiSortBy]',
+  selector: '[invSortBy]',
 })
-export default class SortByDirective<T> implements AfterContentInit, OnDestroy {
-  @Input() jhiSortBy!: T;
+export class SortByDirective<T> implements AfterContentInit, OnDestroy {
+  @Input() invSortBy?: T;
 
-  @ContentChild(FaIconComponent, { static: false })
+  @ContentChild(FaIconComponent, { static: true })
   iconComponent?: FaIconComponent;
 
   sortIcon = faSort;
@@ -29,9 +28,7 @@ export default class SortByDirective<T> implements AfterContentInit, OnDestroy {
 
   @HostListener('click')
   onClick(): void {
-    if (this.iconComponent) {
-      this.sort.sort(this.jhiSortBy);
-    }
+    this.sort.sort(this.invSortBy);
   }
 
   ngAfterContentInit(): void {
@@ -46,7 +43,7 @@ export default class SortByDirective<T> implements AfterContentInit, OnDestroy {
   private updateIconDefinition(): void {
     if (this.iconComponent) {
       let icon: IconDefinition = this.sortIcon;
-      if (this.sort.predicate === this.jhiSortBy) {
+      if (this.sort.predicate === this.invSortBy) {
         icon = this.sort.ascending ? this.sortAscIcon : this.sortDescIcon;
       }
       this.iconComponent.icon = icon.iconName;

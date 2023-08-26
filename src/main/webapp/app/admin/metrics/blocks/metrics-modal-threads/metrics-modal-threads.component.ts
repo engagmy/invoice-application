@@ -1,15 +1,12 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
-import SharedModule from 'app/shared/shared.module';
 import { Thread, ThreadState } from 'app/admin/metrics/metrics.model';
 
 @Component({
-  standalone: true,
-  selector: 'jhi-thread-modal',
+  selector: 'inv-thread-modal',
   templateUrl: './metrics-modal-threads.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [SharedModule],
 })
 export class MetricsModalThreadsComponent implements OnInit {
   ThreadState = ThreadState;
@@ -41,13 +38,13 @@ export class MetricsModalThreadsComponent implements OnInit {
 
   getBadgeClass(threadState: ThreadState): string {
     if (threadState === ThreadState.Runnable) {
-      return 'bg-success';
+      return 'badge-success';
     } else if (threadState === ThreadState.Waiting) {
-      return 'bg-info';
+      return 'badge-info';
     } else if (threadState === ThreadState.TimedWaiting) {
-      return 'bg-warning';
+      return 'badge-warning';
     } else if (threadState === ThreadState.Blocked) {
-      return 'bg-danger';
+      return 'badge-danger';
     }
     return '';
   }

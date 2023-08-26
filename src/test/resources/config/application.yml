@@ -14,14 +14,41 @@
 # ===================================================================
 
 spring:
+  profiles:
+    # Uncomment the following line to enable tests against production database type rather than H2, using Testcontainers
+    #active: testcontainers
   application:
-    name: InvoiceApplication
-  # Replace by 'prod, faker' to add the faker context and have sample data loaded in production
-  liquibase:
-    contexts: test
+    name: invoice
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    url: jdbc:h2:mem:invoice;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    name:
+    username:
+    password:
+    hikari:
+      auto-commit: false
   jackson:
     serialization:
       write-durations-as-timestamps: false
+  jpa:
+    database-platform: tech.jhipster.domain.util.FixedH2Dialect
+    open-in-view: false
+    hibernate:
+      ddl-auto: none
+      naming:
+        physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
+        implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
+    properties:
+      hibernate.id.new_generator_mappings: true
+      hibernate.connection.provider_disables_autocommit: true
+      hibernate.cache.use_second_level_cache: false
+      hibernate.cache.use_query_cache: false
+      hibernate.generate_statistics: false
+      hibernate.hbm2ddl.auto: validate
+      hibernate.jdbc.time_zone: UTC
+      hibernate.query.fail_on_pagination_over_collection_fetch: true
+  liquibase:
+    contexts: test
   mail:
     host: localhost
   main:
@@ -30,15 +57,15 @@ spring:
     basename: i18n/messages
   task:
     execution:
-      thread-name-prefix: invoice-application-task-
+      thread-name-prefix: invoice-task-
       pool:
         core-size: 1
         max-size: 50
         queue-capacity: 10000
     scheduling:
-      thread-name-prefix: invoice-application-scheduling-
+      thread-name-prefix: invoice-scheduling-
       pool:
-        size: 20
+        size: 1
   thymeleaf:
     mode: HTML
 
@@ -51,12 +78,10 @@ server:
 #
 # Full reference is available at: https://www.jhipster.tech/common-application-properties/
 # ===================================================================
+
 jhipster:
   clientApp:
-    name: 'invoiceApplicationApp'
-  mail:
-    from: InvoiceApplication@localhost.com
-    base-url: http://127.0.0.1:8080
+    name: 'invoiceApp'
   logging:
     # To test json console appender
     use-json-format: false
@@ -64,12 +89,14 @@ jhipster:
       enabled: false
       host: localhost
       port: 5000
-      ring-buffer-size: 512
+      queue-size: 512
+  mail:
+    from: test@localhost
+    base-url: http://127.0.0.1:8080
   security:
     remember-me:
       # security key (this key should be unique for your application, and kept secret)
       key: 107f2f14606b41fb52532e6350e0857cda4e6cbead79339b82fe58a9b18e5729284cd075faac78a2e980747a91650dd4e940
-
 # ===================================================================
 # Application specific properties
 # Add your own application properties here, see the ApplicationProperties class
@@ -80,7 +107,3 @@ jhipster:
 # ===================================================================
 
 # application:
-management:
-  health:
-    mail:
-      enabled: false

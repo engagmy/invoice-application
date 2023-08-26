@@ -1,14 +1,11 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
-import SharedModule from 'app/shared/shared.module';
 import { ProcessMetrics } from 'app/admin/metrics/metrics.model';
 
 @Component({
-  standalone: true,
-  selector: 'jhi-metrics-system',
+  selector: 'inv-metrics-system',
   templateUrl: './metrics-system.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [SharedModule],
 })
 export class MetricsSystemComponent {
   /**
@@ -37,7 +34,7 @@ export class MetricsSystemComponent {
         if (Math.floor(ms / value) > 1) {
           plural = 's';
         }
-        timeString += `${Math.floor(ms / value).toString()} ${key.toString()}${plural} `;
+        timeString += Math.floor(ms / value).toString() + ' ' + key.toString() + plural + ' ';
         ms = ms - value * Math.floor(ms / value);
       }
     }

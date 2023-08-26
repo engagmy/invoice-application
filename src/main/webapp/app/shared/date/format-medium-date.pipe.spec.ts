@@ -1,6 +1,6 @@
-import dayjs from 'dayjs/esm';
+import * as dayjs from 'dayjs';
 
-import FormatMediumDatePipe from './format-medium-date.pipe';
+import { FormatMediumDatePipe } from './format-medium-date.pipe';
 
 describe('FormatMediumDatePipe', () => {
   const formatMediumDatePipe = new FormatMediumDatePipe();

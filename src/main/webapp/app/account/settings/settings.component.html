@@ -1,20 +1,20 @@
 <div>
-  <div class="d-flex justify-content-center">
+  <div class="row justify-content-center">
     <div class="col-md-8">
-      <h2 jhiTranslate="settings.title" [translateValues]="{ username: settingsForm.value.login }" *ngIf="settingsForm.value.login">
-        إعدادات المستخدم ل [<strong>{{ settingsForm.value.login }}</strong
+      <h2 invTranslate="settings.title" [translateValues]="{ username: account.login }" *ngIf="account">
+        User settings for [<strong>{{ account.login }}</strong
         >]
       </h2>
 
-      <div class="alert alert-success" *ngIf="success" jhiTranslate="settings.messages.success">
-        <strong>تم حفظ الاعدادات!</strong>
+      <div class="alert alert-success" *ngIf="success" invTranslate="settings.messages.success">
+        <strong>Settings saved!</strong>
       </div>
 
-      <jhi-alert-error></jhi-alert-error>
+      <inv-alert-error></inv-alert-error>
 
-      <form name="form" role="form" (ngSubmit)="save()" [formGroup]="settingsForm" *ngIf="settingsForm.value.login" novalidate>
-        <div class="mb-3">
-          <label class="form-label" for="firstName" jhiTranslate="settings.form.firstname">الاسم الاول</label>
+      <form name="form" role="form" (ngSubmit)="save()" [formGroup]="settingsForm" *ngIf="account" novalidate>
+        <div class="form-group">
+          <label class="form-control-label" for="firstName" invTranslate="settings.form.firstname">First Name</label>
           <input
             type="text"
             class="form-control"
@@ -33,31 +33,31 @@
             <small
               class="form-text text-danger"
               *ngIf="settingsForm.get('firstName')?.errors?.required"
-              jhiTranslate="settings.messages.validate.firstname.required"
+              invTranslate="settings.messages.validate.firstname.required"
             >
-              مطلوب اسمك الأول.
+              Your first name is required.
             </small>
 
             <small
               class="form-text text-danger"
               *ngIf="settingsForm.get('firstName')?.errors?.minlength"
-              jhiTranslate="settings.messages.validate.firstname.minlength"
+              invTranslate="settings.messages.validate.firstname.minlength"
             >
-              مطلوب اسمك الأول أن يكون على الأقل 1 حرف
+              Your first name is required to be at least 1 character.
             </small>
 
             <small
               class="form-text text-danger"
               *ngIf="settingsForm.get('firstName')?.errors?.maxlength"
-              jhiTranslate="settings.messages.validate.firstname.maxlength"
+              invTranslate="settings.messages.validate.firstname.maxlength"
             >
-              لا يمكن أن يكون الاسم الأول اكثر من 50 حرفا
+              Your first name cannot be longer than 50 characters.
             </small>
           </div>
         </div>
 
-        <div class="mb-3">
-          <label class="form-label" for="lastName" jhiTranslate="settings.form.lastname">اللقب</label>
+        <div class="form-group">
+          <label class="form-control-label" for="lastName" invTranslate="settings.form.lastname">Last Name</label>
           <input
             type="text"
             class="form-control"
@@ -74,31 +74,31 @@
             <small
               class="form-text text-danger"
               *ngIf="settingsForm.get('lastName')?.errors?.required"
-              jhiTranslate="settings.messages.validate.lastname.required"
+              invTranslate="settings.messages.validate.lastname.required"
             >
-              مطلوب لقبك.
+              Your last name is required.
             </small>
 
             <small
               class="form-text text-danger"
               *ngIf="settingsForm.get('lastName')?.errors?.minlength"
-              jhiTranslate="settings.messages.validate.lastname.minlength"
+              invTranslate="settings.messages.validate.lastname.minlength"
             >
-              مطلوب اسم عائلتك ليكون على الأقل 1 حرف
+              Your last name is required to be at least 1 character.
             </small>
 
             <small
               class="form-text text-danger"
               *ngIf="settingsForm.get('lastName')?.errors?.maxlength"
-              jhiTranslate="settings.messages.validate.lastname.maxlength"
+              invTranslate="settings.messages.validate.lastname.maxlength"
             >
-              لا يمكن أن يكون اسم العائلة اكثر من 50 حرفا
+              Your last name cannot be longer than 50 characters.
             </small>
           </div>
         </div>
 
-        <div class="mb-3">
-          <label class="form-label" for="email" jhiTranslate="global.form.email.label">البريد الإلكتروني</label>
+        <div class="form-group">
+          <label class="form-control-label" for="email" invTranslate="global.form.email.label">Email</label>
           <input
             type="email"
             class="form-control"
@@ -113,39 +113,39 @@
             <small
               class="form-text text-danger"
               *ngIf="settingsForm.get('email')?.errors?.required"
-              jhiTranslate="global.messages.validate.email.required"
+              invTranslate="global.messages.validate.email.required"
             >
-              البريد الإلكتروني الخاصة بك مطلوب.
+              Your email is required.
             </small>
 
             <small
               class="form-text text-danger"
               *ngIf="settingsForm.get('email')?.errors?.email"
-              jhiTranslate="global.messages.validate.email.invalid"
+              invTranslate="global.messages.validate.email.invalid"
             >
-              بريدك الالكتروني خاطئ.
+              Your email is invalid.
             </small>
 
             <small
               class="form-text text-danger"
               *ngIf="settingsForm.get('email')?.errors?.minlength"
-              jhiTranslate="global.messages.validate.email.minlength"
+              invTranslate="global.messages.validate.email.minlength"
             >
-              البريد اﻹلكتروني لا يمكن أن يكون اقل 4 احرف.
+              Your email is required to be at least 5 characters.
             </small>
 
             <small
               class="form-text text-danger"
               *ngIf="settingsForm.get('email')?.errors?.maxlength"
-              jhiTranslate="global.messages.validate.email.maxlength"
+              invTranslate="global.messages.validate.email.maxlength"
             >
-              البريد اﻹلكتروني لا يمكن أن يكون اكثر من 50 حرفا.
+              Your email cannot be longer than 100 characters.
             </small>
           </div>
         </div>
 
-        <div class="mb-3" *ngIf="languages && languages.length > 0">
-          <label for="langKey" jhiTranslate="settings.form.language">لغة</label>
+        <div class="form-group" *ngIf="languages && languages.length > 0">
+          <label for="langKey" invTranslate="settings.form.language">Language</label>
           <select class="form-control" id="langKey" name="langKey" formControlName="langKey" data-cy="langKey">
             <option *ngFor="let language of languages" [value]="language">{{ language | findLanguageFromKey }}</option>
           </select>
@@ -155,10 +155,10 @@
           type="submit"
           [disabled]="settingsForm.invalid"
           class="btn btn-primary"
-          jhiTranslate="settings.form.button"
+          invTranslate="settings.form.button"
           data-cy="submit"
         >
-          حفظ
+          Save
         </button>
       </form>
     </div>

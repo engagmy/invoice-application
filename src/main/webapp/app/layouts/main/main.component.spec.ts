@@ -1,237 +1,208 @@
 jest.mock('app/core/auth/account.service');
 
-import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
-import { Router, TitleStrategy } from '@angular/router';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
+import { Router, RouterEvent, NavigationEnd, NavigationStart } from '@angular/router';
 import { Title } from '@angular/platform-browser';
-import { RouterTestingModule } from '@angular/router/testing';
-import { DOCUMENT } from '@angular/common';
-import { Component } from '@angular/core';
-import { of } from 'rxjs';
+import { Subject, of } from 'rxjs';
 import { TranslateModule, TranslateService, LangChangeEvent } from '@ngx-translate/core';
 
 import { AccountService } from 'app/core/auth/account.service';
-import FindLanguageFromKeyPipe from 'app/shared/language/find-language-from-key.pipe';
+import { FindLanguageFromKeyPipe } from 'app/shared/language/find-language-from-key.pipe';
 
-import MainComponent from './main.component';
-import { AppPageTitleStrategy } from 'app/app-page-title-strategy';
+import { MainComponent } from './main.component';
 
-describe('MainComponent', () => {
-  let comp: MainComponent;
-  let fixture: ComponentFixture<MainComponent>;
-  let titleService: Title;
-  let translateService: TranslateService;
-  let findLanguageFromKeyPipe: FindLanguageFromKeyPipe;
-  let mockAccountService: AccountService;
-  const routerState: any = { snapshot: { root: { data: {} } } };
-  let router: Router;
-  let document: Document;
+describe('Component Tests', () => {
+  describe('MainComponent', () => {
+    let comp: MainComponent;
+    let fixture: ComponentFixture<MainComponent>;
+    let titleService: Title;
+    let translateService: TranslateService;
+    let findLanguageFromKeyPipe: FindLanguageFromKeyPipe;
+    let mockAccountService: AccountService;
+    const routerEventsSubject = new Subject<RouterEvent>();
+    const routerState: any = { snapshot: { root: { data: {} } } };
+    class MockRouter {
+      events = routerEventsSubject;
+      routerState = routerState;
+    }
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: [TranslateModule.forRoot(), RouterTestingModule],
-      declarations: [MainComponent],
-      providers: [Title, FindLanguageFromKeyPipe, AccountService, { provide: TitleStrategy, useClass: AppPageTitleStrategy }],
-    })
-      .overrideTemplate(MainComponent, '')
-      .compileComponents();
-  }));
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(MainComponent);
-    comp = fixture.componentInstance;
-    titleService = TestBed.inject(Title);
-    translateService = TestBed.inject(TranslateService);
-    findLanguageFromKeyPipe = TestBed.inject(FindLanguageFromKeyPipe);
-    mockAccountService = TestBed.inject(AccountService);
-    mockAccountService.identity = jest.fn(() => of(null));
-    mockAccountService.getAuthenticationState = jest.fn(() => of(null));
-    router = TestBed.inject(Router);
-    document = TestBed.inject(DOCUMENT);
-  });
-
-  describe('page title', () => {
-    const defaultPageTitle = 'global.title';
-    const parentRoutePageTitle = 'parentTitle';
-    const childRoutePageTitle = 'childTitle';
-    const langChangeEvent: LangChangeEvent = { lang: 'ar-ly', translations: null };
+    beforeEach(
+      waitForAsync(() => {
+        TestBed.configureTestingModule({
+          imports: [TranslateModule.forRoot()],
+          declarations: [MainComponent],
+          providers: [
+            Title,
+            FindLanguageFromKeyPipe,
+            AccountService,
+            {
+              provide: Router,
+              useClass: MockRouter,
+            },
+          ],
+        })
+          .overrideTemplate(MainComponent, '')
+          .compileComponents();
+      })
+    );
 
     beforeEach(() => {
-      routerState.snapshot.root = { data: {} };
-      jest.spyOn(translateService, 'get').mockImplementation((key: string | string[]) => of(`${key as string} translated`));
-      translateService.currentLang = 'ar-ly';
-      jest.spyOn(titleService, 'setTitle');
-      comp.ngOnInit();
+      fixture = TestBed.createComponent(MainComponent);
+      comp = fixture.componentInstance;
+      titleService = TestBed.inject(Title);
+      translateService = TestBed.inject(TranslateService);
+      findLanguageFromKeyPipe = TestBed.inject(FindLanguageFromKeyPipe);
+      mockAccountService = TestBed.inject(AccountService);
+      mockAccountService.identity = jest.fn(() => of(null));
+      mockAccountService.getAuthenticationState = jest.fn(() => of(null));
     });
 
-    describe('navigation end', () => {
-      it('should set page title to default title if pageTitle is missing on routes', fakeAsync(() => {
-        // WHEN
-        router.navigateByUrl('');
-        tick();
+    describe('page title', () => {
+      const defaultPageTitle = 'global.title';
+      const parentRoutePageTitle = 'parentTitle';
+      const childRoutePageTitle = 'childTitle';
+      const navigationEnd = new NavigationEnd(1, '', '');
+      const navigationStart = new NavigationStart(1, '');
+      const langChangeEvent: LangChangeEvent = { lang: 'ar-ly', translations: null };
 
-        // THEN
-        expect(document.title).toBe(defaultPageTitle + ' translated');
-      }));
-
-      it('should set page title to root route pageTitle if there is no child routes', fakeAsync(() => {
-        // GIVEN
-        router.resetConfig([{ path: '', title: parentRoutePageTitle, component: BlankComponent }]);
-
-        // WHEN
-        router.navigateByUrl('');
-        tick();
-
-        // THEN
-        expect(document.title).toBe(parentRoutePageTitle + ' translated');
-      }));
-
-      it('should set page title to child route pageTitle if child routes exist and pageTitle is set for child route', fakeAsync(() => {
-        // GIVEN
-        router.resetConfig([
-          {
-            path: 'home',
-            title: parentRoutePageTitle,
-            children: [{ path: '', title: childRoutePageTitle, component: BlankComponent }],
-          },
-        ]);
-
-        // WHEN
-        router.navigateByUrl('home');
-        tick();
-
-        // THEN
-        expect(document.title).toBe(childRoutePageTitle + ' translated');
-      }));
-
-      it('should set page title to parent route pageTitle if child routes exists but pageTitle is not set for child route data', fakeAsync(() => {
-        // GIVEN
-        router.resetConfig([
-          {
-            path: 'home',
-            title: parentRoutePageTitle,
-            children: [{ path: '', component: BlankComponent }],
-          },
-        ]);
-
-        // WHEN
-        router.navigateByUrl('home');
-        tick();
-
-        // THEN
-        expect(document.title).toBe(parentRoutePageTitle + ' translated');
-      }));
-    });
-
-    describe('language change', () => {
-      it('should set page title to default title if pageTitle is missing on routes', () => {
-        // WHEN
-        translateService.onLangChange.emit(langChangeEvent);
-
-        // THEN
-        expect(document.title).toBe(defaultPageTitle + ' translated');
+      beforeEach(() => {
+        routerState.snapshot.root = { data: {} };
+        jest.spyOn(translateService, 'get').mockImplementation((key: string | string[]) => of(`${key as string} translated`));
+        translateService.currentLang = 'ar-ly';
+        jest.spyOn(titleService, 'setTitle');
+        comp.ngOnInit();
       });
 
-      it('should set page title to root route pageTitle if there is no child routes', fakeAsync(() => {
-        // GIVEN
-        routerState.snapshot.root.data = { pageTitle: parentRoutePageTitle };
-        router.resetConfig([{ path: '', title: parentRoutePageTitle, component: BlankComponent }]);
+      describe('navigation end', () => {
+        it('should set page title to default title if pageTitle is missing on routes', () => {
+          // WHEN
+          routerEventsSubject.next(navigationEnd);
 
-        // WHEN
-        router.navigateByUrl('');
-        tick();
+          // THEN
+          expect(translateService.get).toHaveBeenCalledWith(defaultPageTitle);
+          expect(titleService.setTitle).toHaveBeenCalledWith(defaultPageTitle + ' translated');
+        });
 
-        // THEN
-        expect(document.title).toBe(parentRoutePageTitle + ' translated');
+        it('should set page title to root route pageTitle if there is no child routes', () => {
+          // GIVEN
+          routerState.snapshot.root.data = { pageTitle: parentRoutePageTitle };
 
-        // GIVEN
-        document.title = 'other title';
+          // WHEN
+          routerEventsSubject.next(navigationEnd);
 
-        // WHEN
-        translateService.onLangChange.emit(langChangeEvent);
+          // THEN
+          expect(translateService.get).toHaveBeenCalledWith(parentRoutePageTitle);
+          expect(titleService.setTitle).toHaveBeenCalledWith(parentRoutePageTitle + ' translated');
+        });
 
-        // THEN
-        expect(document.title).toBe(parentRoutePageTitle + ' translated');
-      }));
+        it('should set page title to child route pageTitle if child routes exist and pageTitle is set for child route', () => {
+          // GIVEN
+          routerState.snapshot.root.data = { pageTitle: parentRoutePageTitle };
+          routerState.snapshot.root.firstChild = { data: { pageTitle: childRoutePageTitle } };
 
-      it('should set page title to child route pageTitle if child routes exist and pageTitle is set for child route', fakeAsync(() => {
-        // GIVEN
-        router.resetConfig([
-          {
-            path: 'home',
-            title: parentRoutePageTitle,
-            children: [{ path: '', title: childRoutePageTitle, component: BlankComponent }],
-          },
-        ]);
+          // WHEN
+          routerEventsSubject.next(navigationEnd);
 
-        // WHEN
-        router.navigateByUrl('home');
-        tick();
+          // THEN
+          expect(translateService.get).toHaveBeenCalledWith(childRoutePageTitle);
+          expect(titleService.setTitle).toHaveBeenCalledWith(childRoutePageTitle + ' translated');
+        });
 
-        // THEN
-        expect(document.title).toBe(childRoutePageTitle + ' translated');
+        it('should set page title to parent route pageTitle if child routes exists but pageTitle is not set for child route data', () => {
+          // GIVEN
+          routerState.snapshot.root.data = { pageTitle: parentRoutePageTitle };
+          routerState.snapshot.root.firstChild = { data: {} };
 
-        // GIVEN
-        document.title = 'other title';
+          // WHEN
+          routerEventsSubject.next(navigationEnd);
 
-        // WHEN
-        translateService.onLangChange.emit(langChangeEvent);
+          // THEN
+          expect(translateService.get).toHaveBeenCalledWith(parentRoutePageTitle);
+          expect(titleService.setTitle).toHaveBeenCalledWith(parentRoutePageTitle + ' translated');
+        });
+      });
 
-        // THEN
-        expect(document.title).toBe(childRoutePageTitle + ' translated');
-      }));
+      describe('navigation start', () => {
+        it('should not set page title on navigation start', () => {
+          // WHEN
+          routerEventsSubject.next(navigationStart);
 
-      it('should set page title to parent route pageTitle if child routes exists but pageTitle is not set for child route data', fakeAsync(() => {
-        // GIVEN
-        router.resetConfig([
-          {
-            path: 'home',
-            title: parentRoutePageTitle,
-            children: [{ path: '', component: BlankComponent }],
-          },
-        ]);
+          // THEN
+          expect(titleService.setTitle).not.toHaveBeenCalled();
+        });
+      });
 
-        // WHEN
-        router.navigateByUrl('home');
-        tick();
+      describe('language change', () => {
+        it('should set page title to default title if pageTitle is missing on routes', () => {
+          // WHEN
+          translateService.onLangChange.emit(langChangeEvent);
 
-        // THEN
-        expect(document.title).toBe(parentRoutePageTitle + ' translated');
+          // THEN
+          expect(translateService.get).toHaveBeenCalledWith(defaultPageTitle);
+          expect(titleService.setTitle).toHaveBeenCalledWith(defaultPageTitle + ' translated');
+        });
 
-        // GIVEN
-        document.title = 'other title';
+        it('should set page title to root route pageTitle if there is no child routes', () => {
+          // GIVEN
+          routerState.snapshot.root.data = { pageTitle: parentRoutePageTitle };
 
-        // WHEN
-        translateService.onLangChange.emit(langChangeEvent);
+          // WHEN
+          translateService.onLangChange.emit(langChangeEvent);
 
-        // THEN
-        expect(document.title).toBe(parentRoutePageTitle + ' translated');
-      }));
+          // THEN
+          expect(translateService.get).toHaveBeenCalledWith(parentRoutePageTitle);
+          expect(titleService.setTitle).toHaveBeenCalledWith(parentRoutePageTitle + ' translated');
+        });
+
+        it('should set page title to child route pageTitle if child routes exist and pageTitle is set for child route', () => {
+          // GIVEN
+          routerState.snapshot.root.data = { pageTitle: parentRoutePageTitle };
+          routerState.snapshot.root.firstChild = { data: { pageTitle: childRoutePageTitle } };
+
+          // WHEN
+          translateService.onLangChange.emit(langChangeEvent);
+
+          // THEN
+          expect(translateService.get).toHaveBeenCalledWith(childRoutePageTitle);
+          expect(titleService.setTitle).toHaveBeenCalledWith(childRoutePageTitle + ' translated');
+        });
+
+        it('should set page title to parent route pageTitle if child routes exists but pageTitle is not set for child route data', () => {
+          // GIVEN
+          routerState.snapshot.root.data = { pageTitle: parentRoutePageTitle };
+          routerState.snapshot.root.firstChild = { data: {} };
+
+          // WHEN
+          translateService.onLangChange.emit(langChangeEvent);
+
+          // THEN
+          expect(translateService.get).toHaveBeenCalledWith(parentRoutePageTitle);
+          expect(titleService.setTitle).toHaveBeenCalledWith(parentRoutePageTitle + ' translated');
+        });
+      });
     });
-  });
 
-  describe('page language attribute', () => {
-    it('should change page language attribute on language change', () => {
-      // GIVEN
-      comp.ngOnInit();
+    describe('page language attribute', () => {
+      it('should change page language attribute on language change', () => {
+        // GIVEN
+        comp.ngOnInit();
 
-      // WHEN
-      findLanguageFromKeyPipe.isRTL = jest.fn(() => false);
-      translateService.onLangChange.emit({ lang: 'lang1', translations: null });
+        // WHEN
+        findLanguageFromKeyPipe.isRTL = jest.fn(() => false);
+        translateService.onLangChange.emit({ lang: 'lang1', translations: null });
 
-      // THEN
-      expect(document.querySelector('html')?.getAttribute('lang')).toEqual('lang1');
-      expect(document.querySelector('html')?.getAttribute('dir')).toEqual('ltr');
+        // THEN
+        expect(document.querySelector('html')?.getAttribute('lang')).toEqual('lang1');
+        expect(document.querySelector('html')?.getAttribute('dir')).toEqual('ltr');
 
-      // WHEN
-      findLanguageFromKeyPipe.isRTL = jest.fn(() => true);
-      translateService.onLangChange.emit({ lang: 'lang2', translations: null });
+        // WHEN
+        findLanguageFromKeyPipe.isRTL = jest.fn(() => true);
+        translateService.onLangChange.emit({ lang: 'lang2', translations: null });
 
-      // THEN
-      expect(document.querySelector('html')?.getAttribute('lang')).toEqual('lang2');
-      expect(document.querySelector('html')?.getAttribute('dir')).toEqual('rtl');
+        // THEN
+        expect(document.querySelector('html')?.getAttribute('lang')).toEqual('lang2');
+        expect(document.querySelector('html')?.getAttribute('dir')).toEqual('rtl');
+      });
     });
   });
 });
-
-@Component({ template: '' })
-export class BlankComponent {}

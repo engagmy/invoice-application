@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Observable, Observer } from 'rxjs';
-import { Buffer } from 'buffer';
 
 export type FileLoadErrorType = 'not.image' | 'could.not.extract';
 
@@ -30,21 +29,29 @@ export class DataUtils {
    */
   openFile(data: string, contentType: string | null | undefined): void {
     contentType = contentType ?? '';
-
-    const byteCharacters = Buffer.from(data, 'base64').toString('binary');
-    const byteNumbers = new Array(byteCharacters.length);
-    for (let i = 0; i < byteCharacters.length; i++) {
-      byteNumbers[i] = byteCharacters.charCodeAt(i);
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (window.navigator.msSaveOrOpenBlob) {
+      // To support IE
+      const byteCharacters = atob(data);
+      const byteNumbers = new Array(byteCharacters.length);
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+      const blob = new Blob([byteArray], {
+        type: contentType,
+      });
+      window.navigator.msSaveOrOpenBlob(blob);
+    } else {
+      // Other browsers
+      const fileURL = `data:${contentType};base64,${data}`;
+      const win = window.open();
+      win?.document.write(
+        '<iframe src="' +
+          fileURL +
+          '" frameborder="0" style="border:0; top:0; left:0; bottom:0; right:0; width:100%; height:100%;" allowfullscreen></iframe>'
+      );
     }
-    const byteArray = new Uint8Array(byteNumbers);
-    const blob = new Blob([byteArray], {
-      type: contentType,
-    });
-    const fileURL = window.URL.createObjectURL(blob);
-    const win = window.open(fileURL);
-    win!.onload = function () {
-      URL.revokeObjectURL(fileURL);
-    };
   }
 
   /**
@@ -99,7 +106,7 @@ export class DataUtils {
     const fileReader: FileReader = new FileReader();
     fileReader.onload = (e: ProgressEvent<FileReader>) => {
       if (typeof e.target?.result === 'string') {
-        const base64Data: string = e.target.result.substring(e.target.result.indexOf('base64,') + 'base64,'.length);
+        const base64Data: string = e.target.result.substr(e.target.result.indexOf('base64,') + 'base64,'.length);
         callback(base64Data);
       }
     };
@@ -125,6 +132,6 @@ export class DataUtils {
   }
 
   private formatAsBytes(size: number): string {
-    return size.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' bytes'; // NOSONAR
+    return size.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' bytes';
   }
 }

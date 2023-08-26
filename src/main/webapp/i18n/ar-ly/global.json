@@ -1,12 +1,17 @@
 {
   "global": {
-    "title": "InvoiceApplication",
+    "title": "Invoice",
     "browsehappy": "أنت تستخدم متصفح <strong>قديم</strong> . من فضلك <a href=\"http://browsehappy.com/?locale=en\">قم بتحديث متصفحك</a> لتحسين تجربتك.",
     "menu": {
       "home": "الصفحة الرئيسية",
       "jhipster-needle-menu-add-element": "JHipster will add additional menu entries here (do not translate!)",
       "entities": {
         "main": "الكيانات",
+        "supplier": "Supplier",
+        "item": "Item",
+        "supplierItem": "Supplier Item",
+        "invoice": "Invoice",
+        "invoiceItem": "Invoice Item",
         "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
       },
       "account": {
@@ -97,8 +102,7 @@
       "edit": "تعديل",
       "open": "فتح",
       "save": "حفظ",
-      "view": "عرض",
-      "show": "Show {{otherEntity}}"
+      "view": "عرض"
     },
     "detail": {
       "field": "حقل",
@@ -118,11 +122,6 @@
       "pattern": "هذا الحقل يجب أن يتبع نمط {{ pattern }}.",
       "number": "هذا الحقل يجب أن يكون رقم.",
       "datetimelocal": "هذا الحقل يجب أن يكون تاريخ ووقت."
-    },
-    "filters": {
-      "set": "Following filters are set",
-      "clear": "Clear filter",
-      "clearAll": "Clear all filters"
     }
   },
   "error": {

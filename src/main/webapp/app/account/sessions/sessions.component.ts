@@ -1,18 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 
-import SharedModule from 'app/shared/shared.module';
 import { AccountService } from 'app/core/auth/account.service';
 import { Session } from './session.model';
 import { SessionsService } from './sessions.service';
 import { Account } from 'app/core/auth/account.model';
 
 @Component({
-  selector: 'jhi-sessions',
-  standalone: true,
-  imports: [SharedModule],
+  selector: 'inv-sessions',
   templateUrl: './sessions.component.html',
 })
-export default class SessionsComponent implements OnInit {
+export class SessionsComponent implements OnInit {
   account: Account | null = null;
   error = false;
   success = false;

@@ -1,0 +1,25 @@
+<form *ngIf="invoice" name="deleteForm" (ngSubmit)="confirmDelete(invoice.id!)">
+  <div class="modal-header">
+    <h4 class="modal-title" data-cy="invoiceDeleteDialogHeading" invTranslate="entity.delete.title">Confirm delete operation</h4>
+
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" (click)="cancel()">&times;</button>
+  </div>
+
+  <div class="modal-body">
+    <inv-alert-error></inv-alert-error>
+
+    <p id="inv-delete-invoice-heading" invTranslate="invoiceApp.invoice.delete.question" [translateValues]="{ id: invoice.id }">
+      Are you sure you want to delete this Invoice?
+    </p>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="cancel()">
+      <fa-icon icon="ban"></fa-icon>&nbsp;<span invTranslate="entity.action.cancel">Cancel</span>
+    </button>
+
+    <button id="inv-confirm-delete-invoice" data-cy="entityConfirmDeleteButton" type="submit" class="btn btn-danger">
+      <fa-icon icon="times"></fa-icon>&nbsp;<span invTranslate="entity.action.delete">Delete</span>
+    </button>
+  </div>
+</form>

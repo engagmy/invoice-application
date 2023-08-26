@@ -1,28 +1,21 @@
 import { Component, OnInit } from '@angular/core';
-import { RouterModule } from '@angular/router';
 import { HttpResponse, HttpHeaders } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
-import SharedModule from 'app/shared/shared.module';
-import { SortDirective, SortByDirective } from 'app/shared/sort';
-import { ITEMS_PER_PAGE } from 'app/config/pagination.constants';
-import { ASC, DESC, SORT } from 'app/config/navigation.constants';
-import { ItemCountComponent } from 'app/shared/pagination';
+import { ASC, DESC, ITEMS_PER_PAGE, SORT } from 'app/config/pagination.constants';
 import { AccountService } from 'app/core/auth/account.service';
 import { Account } from 'app/core/auth/account.model';
 import { UserManagementService } from '../service/user-management.service';
 import { User } from '../user-management.model';
-import UserManagementDeleteDialogComponent from '../delete/user-management-delete-dialog.component';
+import { UserManagementDeleteDialogComponent } from '../delete/user-management-delete-dialog.component';
 
 @Component({
-  standalone: true,
-  selector: 'jhi-user-mgmt',
+  selector: 'inv-user-mgmt',
   templateUrl: './user-management.component.html',
-  imports: [RouterModule, SharedModule, SortDirective, SortByDirective, UserManagementDeleteDialogComponent, ItemCountComponent],
 })
-export default class UserManagementComponent implements OnInit {
+export class UserManagementComponent implements OnInit {
   currentAccount: Account | null = null;
   users: User[] | null = null;
   isLoading = false;
@@ -49,7 +42,7 @@ export default class UserManagementComponent implements OnInit {
     this.userService.update({ ...user, activated: isActivated }).subscribe(() => this.loadAll());
   }
 
-  trackIdentity(_index: number, item: User): number {
+  trackIdentity(index: number, item: User): number {
     return item.id!;
   }
 
@@ -72,13 +65,13 @@ export default class UserManagementComponent implements OnInit {
         size: this.itemsPerPage,
         sort: this.sort(),
       })
-      .subscribe({
-        next: (res: HttpResponse<User[]>) => {
+      .subscribe(
+        (res: HttpResponse<User[]>) => {
           this.isLoading = false;
           this.onSuccess(res.body, res.headers);
         },
-        error: () => (this.isLoading = false),
-      });
+        () => (this.isLoading = false)
+      );
   }
 
   transition(): void {
@@ -86,7 +79,7 @@ export default class UserManagementComponent implements OnInit {
       relativeTo: this.activatedRoute.parent,
       queryParams: {
         page: this.page,
-        sort: `${this.predicate},${this.ascending ? ASC : DESC}`,
+        sort: this.predicate + ',' + (this.ascending ? ASC : DESC),
       },
     });
   }
@@ -94,7 +87,7 @@ export default class UserManagementComponent implements OnInit {
   private handleNavigation(): void {
     combineLatest([this.activatedRoute.data, this.activatedRoute.queryParamMap]).subscribe(([data, params]) => {
       const page = params.get('page');
-      this.page = +(page ?? 1);
+      this.page = page !== null ? +page : 1;
       const sort = (params.get(SORT) ?? data['defaultSort']).split(',');
       this.predicate = sort[0];
       this.ascending = sort[1] === ASC;
@@ -103,7 +96,7 @@ export default class UserManagementComponent implements OnInit {
   }
 
   private sort(): string[] {
-    const result = [`${this.predicate},${this.ascending ? ASC : DESC}`];
+    const result = [this.predicate + ',' + (this.ascending ? ASC : DESC)];
     if (this.predicate !== 'id') {
       result.push('id');
     }

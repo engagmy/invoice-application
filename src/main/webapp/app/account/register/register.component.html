@@ -1,33 +1,35 @@
 <div>
-  <div class="d-flex justify-content-center">
+  <div class="row justify-content-center">
     <div class="col-md-8">
-      <h1 jhiTranslate="register.title" data-cy="registerTitle">التسجيل</h1>
+      <h1 invTranslate="register.title" data-cy="registerTitle">Registration</h1>
 
-      <div class="alert alert-success" *ngIf="success" jhiTranslate="register.messages.success">
-        <strong>تم التسجيل!</strong> يرجى التحقق من بريدك الالكتروني للحصول على تأكيد.
+      <div class="alert alert-success" *ngIf="success" invTranslate="register.messages.success">
+        <strong>Registration saved!</strong> Please check your email for confirmation.
       </div>
 
-      <div class="alert alert-danger" *ngIf="error" jhiTranslate="register.messages.error.fail">
-        <strong>فشل في التسجيل!</strong> الرجاء إعادة المحاولة في وقت لاحق.
+      <div class="alert alert-danger" *ngIf="error" invTranslate="register.messages.error.fail">
+        <strong>Registration failed!</strong> Please try again later.
       </div>
 
-      <div class="alert alert-danger" *ngIf="errorUserExists" jhiTranslate="register.messages.error.userexists">
-        <strong>اسم الدخول مسجل بالفعل!</strong> الرجاء اختيار واحد آخر.
+      <div class="alert alert-danger" *ngIf="errorUserExists" invTranslate="register.messages.error.userexists">
+        <strong>Login name already registered!</strong> Please choose another one.
       </div>
 
-      <div class="alert alert-danger" *ngIf="errorEmailExists" jhiTranslate="register.messages.error.emailexists">
-        <strong>البريد الالكتروني قيد الاستخدام بالفعل!</strong> الرجاء اختيار واحد آخر.
+      <div class="alert alert-danger" *ngIf="errorEmailExists" invTranslate="register.messages.error.emailexists">
+        <strong>Email is already in use!</strong> Please choose another one.
       </div>
 
-      <div class="alert alert-danger" *ngIf="doNotMatch" jhiTranslate="global.messages.error.dontmatch">كلمة السر وتأكيدها لا تتطابق!</div>
+      <div class="alert alert-danger" *ngIf="doNotMatch" invTranslate="global.messages.error.dontmatch">
+        The password and its confirmation do not match!
+      </div>
     </div>
   </div>
 
-  <div class="d-flex justify-content-center">
+  <div class="row justify-content-center">
     <div class="col-md-8">
       <form name="form" role="form" (ngSubmit)="register()" [formGroup]="registerForm" *ngIf="!success">
-        <div class="mb-3">
-          <label class="form-label" for="login" jhiTranslate="global.form.username.label">اسم المستخدم</label>
+        <div class="form-group">
+          <label class="form-control-label" for="login" invTranslate="global.form.username.label">Username</label>
           <input
             type="text"
             class="form-control"
@@ -43,39 +45,39 @@
             <small
               class="form-text text-danger"
               *ngIf="registerForm.get('login')?.errors?.required"
-              jhiTranslate="register.messages.validate.login.required"
+              invTranslate="register.messages.validate.login.required"
             >
-              اسم المستخدم الخاصة بك مطلوب.
+              Your username is required.
             </small>
 
             <small
               class="form-text text-danger"
               *ngIf="registerForm.get('login')?.errors?.minlength"
-              jhiTranslate="register.messages.validate.login.minlength"
+              invTranslate="register.messages.validate.login.minlength"
             >
-              اسم المستخدم الخاصة بك مطلوب ليكون على الأقل 1 حرف.
+              Your username is required to be at least 1 character.
             </small>
 
             <small
               class="form-text text-danger"
               *ngIf="registerForm.get('login')?.errors?.maxlength"
-              jhiTranslate="register.messages.validate.login.maxlength"
+              invTranslate="register.messages.validate.login.maxlength"
             >
-              اسم المستخدم الخاصة بك لا يمكن أن يكون أطول من 50 حرفا.
+              Your username cannot be longer than 50 characters.
             </small>
 
             <small
               class="form-text text-danger"
               *ngIf="registerForm.get('login')?.errors?.pattern"
-              jhiTranslate="register.messages.validate.login.pattern"
+              invTranslate="register.messages.validate.login.pattern"
             >
-              Your username is invalid.
+              Your username can only contain letters and digits.
             </small>
           </div>
         </div>
 
-        <div class="mb-3">
-          <label class="form-label" for="email" jhiTranslate="global.form.email.label">البريد الإلكتروني</label>
+        <div class="form-group">
+          <label class="form-control-label" for="email" invTranslate="global.form.email.label">Email</label>
           <input
             type="email"
             class="form-control"
@@ -90,39 +92,39 @@
             <small
               class="form-text text-danger"
               *ngIf="registerForm.get('email')?.errors?.required"
-              jhiTranslate="global.messages.validate.email.required"
+              invTranslate="global.messages.validate.email.required"
             >
-              البريد الإلكتروني الخاصة بك مطلوب.
+              Your email is required.
             </small>
 
             <small
               class="form-text text-danger"
               *ngIf="registerForm.get('email')?.errors?.invalid"
-              jhiTranslate="global.messages.validate.email.invalid"
+              invTranslate="global.messages.validate.email.invalid"
             >
-              بريدك الالكتروني خاطئ.
+              Your email is invalid.
             </small>
 
             <small
               class="form-text text-danger"
               *ngIf="registerForm.get('email')?.errors?.minlength"
-              jhiTranslate="global.messages.validate.email.minlength"
+              invTranslate="global.messages.validate.email.minlength"
             >
-              البريد اﻹلكتروني لا يمكن أن يكون اقل 4 احرف.
+              Your email is required to be at least 5 characters.
             </small>
 
             <small
               class="form-text text-danger"
               *ngIf="registerForm.get('email')?.errors?.maxlength"
-              jhiTranslate="global.messages.validate.email.maxlength"
+              invTranslate="global.messages.validate.email.maxlength"
             >
-              البريد اﻹلكتروني لا يمكن أن يكون اكثر من 50 حرفا.
+              Your email cannot be longer than 100 characters.
             </small>
           </div>
         </div>
 
-        <div class="mb-3">
-          <label class="form-label" for="password" jhiTranslate="global.form.newpassword.label">كلمة السر الجديدة</label>
+        <div class="form-group">
+          <label class="form-control-label" for="password" invTranslate="global.form.newpassword.label">New password</label>
           <input
             type="password"
             class="form-control"
@@ -139,33 +141,35 @@
             <small
               class="form-text text-danger"
               *ngIf="registerForm.get('password')?.errors?.required"
-              jhiTranslate="global.messages.validate.newpassword.required"
+              invTranslate="global.messages.validate.newpassword.required"
             >
-              كلمة المرور الخاصة بك مطلوبة.
+              Your password is required.
             </small>
 
             <small
               class="form-text text-danger"
               *ngIf="registerForm.get('password')?.errors?.minlength"
-              jhiTranslate="global.messages.validate.newpassword.minlength"
+              invTranslate="global.messages.validate.newpassword.minlength"
             >
-              كلمة السر لا يمكن أن تكون اقل 4 احرف.
+              Your password is required to be at least 4 characters.
             </small>
 
             <small
               class="form-text text-danger"
               *ngIf="registerForm.get('password')?.errors?.maxlength"
-              jhiTranslate="global.messages.validate.newpassword.maxlength"
+              invTranslate="global.messages.validate.newpassword.maxlength"
             >
-              كلمة السر لا يمكن أن تكون اكثر من 50 حرفا.
+              Your password cannot be longer than 50 characters.
             </small>
           </div>
 
-          <jhi-password-strength-bar [passwordToCheck]="registerForm.get('password')!.value"></jhi-password-strength-bar>
+          <inv-password-strength-bar [passwordToCheck]="registerForm.get('password')!.value"></inv-password-strength-bar>
         </div>
 
-        <div class="mb-3">
-          <label class="form-label" for="confirmPassword" jhiTranslate="global.form.confirmpassword.label">تأكيد كلمة السر الجديدة</label>
+        <div class="form-group">
+          <label class="form-control-label" for="confirmPassword" invTranslate="global.form.confirmpassword.label"
+            >New password confirmation</label
+          >
           <input
             type="password"
             class="form-control"
@@ -185,25 +189,25 @@
             <small
               class="form-text text-danger"
               *ngIf="registerForm.get('confirmPassword')?.errors?.required"
-              jhiTranslate="global.messages.validate.confirmpassword.required"
+              invTranslate="global.messages.validate.confirmpassword.required"
             >
-              تأكيد كلمة المرور الخاصة بك مطلوب.
+              Your confirmation password is required.
             </small>
 
             <small
               class="form-text text-danger"
               *ngIf="registerForm.get('confirmPassword')?.errors?.minlength"
-              jhiTranslate="global.messages.validate.confirmpassword.minlength"
+              invTranslate="global.messages.validate.confirmpassword.minlength"
             >
-              تأكيد كلمة السر لا يمكن أن يكون اقل 4 احرف.
+              Your confirmation password is required to be at least 4 characters.
             </small>
 
             <small
               class="form-text text-danger"
               *ngIf="registerForm.get('confirmPassword')?.errors?.maxlength"
-              jhiTranslate="global.messages.validate.confirmpassword.maxlength"
+              invTranslate="global.messages.validate.confirmpassword.maxlength"
             >
-              تأكيد كلمة السر لا يمكن أن يكون اكثر من 50 حرفا.
+              Your confirmation password cannot be longer than 50 characters.
             </small>
           </div>
         </div>
@@ -212,19 +216,19 @@
           type="submit"
           [disabled]="registerForm.invalid"
           class="btn btn-primary"
-          jhiTranslate="register.form.button"
+          invTranslate="register.form.button"
           data-cy="submit"
         >
-          سجل
+          Register
         </button>
       </form>
 
       <div class="mt-3 alert alert-warning">
-        <span jhiTranslate="global.messages.info.authenticated.prefix">إذا اردت أن </span>
-        <a class="alert-link" routerLink="/login" jhiTranslate="global.messages.info.authenticated.link">تسجل دخولك</a
-        ><span jhiTranslate="global.messages.info.authenticated.suffix"
-          >, يمكنك تجربة الحسابات التجريبية:<br />- المدير (login="admin" و كلمة المرور="admin") <br />- المستخدم (login="user" و كلمة
-          المرور="user").</span
+        <span invTranslate="global.messages.info.authenticated.prefix">If you want to </span>
+        <a class="alert-link" routerLink="/login" invTranslate="global.messages.info.authenticated.link">sign in</a
+        ><span invTranslate="global.messages.info.authenticated.suffix"
+          >, you can try the default accounts:<br />- Administrator (login="admin" and password="admin") <br />- User (login="user" and
+          password="user").</span
         >
       </div>
     </div>

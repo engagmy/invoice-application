@@ -1,9 +1,7 @@
 const webpack = require('webpack');
 const { merge } = require('webpack-merge');
 const path = require('path');
-const { hashElement } = require('folder-hash');
 const MergeJsonWebpackPlugin = require('merge-jsons-webpack-plugin');
-const postcssRTLCSS = require('postcss-rtlcss');
 const BrowserSyncPlugin = require('browser-sync-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const WebpackNotifierPlugin = require('webpack-notifier');
@@ -11,38 +9,38 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const ESLintPlugin = require('eslint-webpack-plugin');
 
 const environment = require('./environment');
-const proxyConfig = require('./proxy.conf');
 
-module.exports = async (config, options, targetOptions) => {
-  const languagesHash = await hashElement(path.resolve(__dirname, '../src/main/webapp/i18n'), {
-    algo: 'md5',
-    encoding: 'hex',
-    files: { include: ['*.json'] },
-  });
+const tls = process.env.TLS;
+
+module.exports = (config, options, targetOptions) => {
+  config.cache = {
+    // 1. Set cache type to filesystem
+    type: 'filesystem',
+    cacheDirectory: path.resolve(__dirname, '../target/webpack'),
+    buildDependencies: {
+      // 2. Add your config as buildDependency to get cache invalidation on config change
+      config: [
+        __filename,
+        path.resolve(__dirname, 'webpack.custom.js'),
+        path.resolve(__dirname, '../angular.json'),
+        path.resolve(__dirname, '../tsconfig.app.json'),
+        path.resolve(__dirname, '../tsconfig.json'),
+      ],
+    },
+  };
 
   // PLUGINS
   if (config.mode === 'development') {
     config.plugins.push(
       new ESLintPlugin({
-        baseConfig: {
-          parserOptions: {
-            project: ['../tsconfig.app.json'],
-          },
-        },
+        extensions: ['js', 'ts'],
       }),
       new WebpackNotifierPlugin({
-        title: 'Invoice Application',
+        title: 'Invoice',
         contentImage: path.join(__dirname, 'logo-jhipster.png'),
       })
     );
   }
-
-  // configuring proxy for back end service
-  const tls = Boolean(config.devServer && config.devServer.https);
-  if (config.devServer) {
-    config.devServer.proxy = proxyConfig({ tls });
-  }
-
   if (targetOptions.target === 'serve' || config.watch) {
     config.plugins.push(
       new BrowserSyncPlugin(
@@ -52,7 +50,6 @@ module.exports = async (config, options, targetOptions) => {
           https: tls,
           proxy: {
             target: `http${tls ? 's' : ''}://localhost:${targetOptions.target === 'serve' ? '4200' : '8080'}`,
-            ws: true,
             proxyOptions: {
               changeOrigin: false, //pass the Host header to the backend unchanged  https://github.com/Browsersync/browser-sync/issues/430
             },
@@ -90,18 +87,6 @@ module.exports = async (config, options, targetOptions) => {
   }
 
   const patterns = [
-    {
-      // https://github.com/swagger-api/swagger-ui/blob/v4.6.1/swagger-ui-dist-package/README.md
-      context: require('swagger-ui-dist').getAbsoluteFSPath(),
-      from: '*.{js,css,html,png}',
-      to: 'swagger-ui/',
-      globOptions: { ignore: ['**/index.html'] },
-    },
-    {
-      from: path.join(path.dirname(require.resolve('axios/package.json')), 'dist/axios.min.js'),
-      to: 'swagger-ui/',
-    },
-    { from: './src/main/webapp/swagger-ui/', to: 'swagger-ui/' },
     // jhipster-needle-add-assets-to-webpack - JHipster will add/remove third-party resources in this array
   ];
 
@@ -109,23 +94,9 @@ module.exports = async (config, options, targetOptions) => {
     config.plugins.push(new CopyWebpackPlugin({ patterns }));
   }
 
-  const scssRule = config.module.rules.find(x => x.test && x.test.toString().includes('scss'));
-  const uses = scssRule.rules.flatMap(r => r.use || r.oneOf.flatMap(o => o.use));
-  const postcssLoaderOptions = uses.filter(u => u.loader.includes('postcss-loader')).map(u => u.options);
-  postcssLoaderOptions.forEach(options => {
-    const generateOptions = options.postcssOptions;
-    options.postcssOptions = loader => {
-      const postcssOptions = generateOptions(loader);
-      postcssOptions.plugins.push(postcssRTLCSS());
-      return postcssOptions;
-    };
-    // https://github.com/angular/angular-cli/blob/4b9199d97f3bcb10710b5049b04d8a04436e2dd4/packages/angular_devkit/build_angular/src/webpack/configs/styles.ts#L201-L202
-    options.postcssOptions.config = false;
-  });
-
   config.plugins.push(
     new webpack.DefinePlugin({
-      I18N_HASH: JSON.stringify(languagesHash.hash),
+      __TIMESTAMP__: JSON.stringify(environment.__TIMESTAMP__),
       // APP_VERSION is passed as an environment variable from the Gradle / Maven build tasks.
       __VERSION__: JSON.stringify(environment.__VERSION__),
       __DEBUG_INFO_ENABLED__: environment.__DEBUG_INFO_ENABLED__ || config.mode === 'development',
@@ -133,7 +104,7 @@ module.exports = async (config, options, targetOptions) => {
       // If this URL is left empty (""), then it will be relative to the current context.
       // If you use an API server, in `prod` mode, you will need to enable CORS
       // (see the `jhipster.cors` common JHipster property in the `application-*.yml` configurations)
-      SERVER_API_URL: JSON.stringify(environment.SERVER_API_URL),
+      __SERVER_API_URL__: JSON.stringify(environment.__SERVER_API_URL__),
     }),
     new MergeJsonWebpackPlugin({
       output: {

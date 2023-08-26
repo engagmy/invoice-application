@@ -1,0 +1,88 @@
+<div>
+  <h2 id="page-heading" data-cy="SupplierItemHeading">
+    <span invTranslate="invoiceApp.supplierItem.home.title">Supplier Items</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info mr-2" (click)="loadAll()" [disabled]="isLoading">
+        <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
+        <span invTranslate="invoiceApp.supplierItem.home.refreshListLabel">Refresh List</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-supplier-item"
+        [routerLink]="['/supplier-item/new']"
+      >
+        <fa-icon icon="plus"></fa-icon>
+        <span invTranslate="invoiceApp.supplierItem.home.createLabel"> Create a new Supplier Item </span>
+      </button>
+    </div>
+  </h2>
+
+  <inv-alert-error></inv-alert-error>
+
+  <inv-alert></inv-alert>
+
+  <div class="alert alert-warning" id="no-result" *ngIf="supplierItems?.length === 0">
+    <span invTranslate="invoiceApp.supplierItem.home.notFound">No supplierItems found</span>
+  </div>
+
+  <div class="table-responsive" id="entities" *ngIf="supplierItems && supplierItems.length > 0">
+    <table class="table table-striped" aria-describedby="page-heading">
+      <thead>
+        <tr>
+          <th scope="col"><span invTranslate="global.field.id">ID</span></th>
+          <th scope="col"><span invTranslate="invoiceApp.supplierItem.supplier">Supplier</span></th>
+          <th scope="col"><span invTranslate="invoiceApp.supplierItem.item">Item</span></th>
+          <th scope="col"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let supplierItem of supplierItems; trackBy: trackId" data-cy="entityTable">
+          <td>
+            <a [routerLink]="['/supplier-item', supplierItem.id, 'view']">{{ supplierItem.id }}</a>
+          </td>
+          <td>
+            <div *ngIf="supplierItem.supplier">
+              <a [routerLink]="['/supplier', supplierItem.supplier?.id, 'view']">{{ supplierItem.supplier?.id }}</a>
+            </div>
+          </td>
+          <td>
+            <div *ngIf="supplierItem.item">
+              <a [routerLink]="['/item', supplierItem.item?.id, 'view']">{{ supplierItem.item?.id }}</a>
+            </div>
+          </td>
+          <td class="text-right">
+            <div class="btn-group">
+              <button
+                type="submit"
+                [routerLink]="['/supplier-item', supplierItem.id, 'view']"
+                class="btn btn-info btn-sm"
+                data-cy="entityDetailsButton"
+              >
+                <fa-icon icon="eye"></fa-icon>
+                <span class="d-none d-md-inline" invTranslate="entity.action.view">View</span>
+              </button>
+
+              <button
+                type="submit"
+                [routerLink]="['/supplier-item', supplierItem.id, 'edit']"
+                class="btn btn-primary btn-sm"
+                data-cy="entityEditButton"
+              >
+                <fa-icon icon="pencil-alt"></fa-icon>
+                <span class="d-none d-md-inline" invTranslate="entity.action.edit">Edit</span>
+              </button>
+
+              <button type="submit" (click)="delete(supplierItem)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                <fa-icon icon="times"></fa-icon>
+                <span class="d-none d-md-inline" invTranslate="entity.action.delete">Delete</span>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

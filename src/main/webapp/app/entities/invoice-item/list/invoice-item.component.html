@@ -1,0 +1,90 @@
+<div>
+  <h2 id="page-heading" data-cy="InvoiceItemHeading">
+    <span invTranslate="invoiceApp.invoiceItem.home.title">Invoice Items</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info mr-2" (click)="loadAll()" [disabled]="isLoading">
+        <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
+        <span invTranslate="invoiceApp.invoiceItem.home.refreshListLabel">Refresh List</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-invoice-item"
+        [routerLink]="['/invoice-item/new']"
+      >
+        <fa-icon icon="plus"></fa-icon>
+        <span invTranslate="invoiceApp.invoiceItem.home.createLabel"> Create a new Invoice Item </span>
+      </button>
+    </div>
+  </h2>
+
+  <inv-alert-error></inv-alert-error>
+
+  <inv-alert></inv-alert>
+
+  <div class="alert alert-warning" id="no-result" *ngIf="invoiceItems?.length === 0">
+    <span invTranslate="invoiceApp.invoiceItem.home.notFound">No invoiceItems found</span>
+  </div>
+
+  <div class="table-responsive" id="entities" *ngIf="invoiceItems && invoiceItems.length > 0">
+    <table class="table table-striped" aria-describedby="page-heading">
+      <thead>
+        <tr>
+          <th scope="col"><span invTranslate="global.field.id">ID</span></th>
+          <th scope="col"><span invTranslate="invoiceApp.invoiceItem.value">Value</span></th>
+          <th scope="col"><span invTranslate="invoiceApp.invoiceItem.invoice">Invoice</span></th>
+          <th scope="col"><span invTranslate="invoiceApp.invoiceItem.item">Item</span></th>
+          <th scope="col"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let invoiceItem of invoiceItems; trackBy: trackId" data-cy="entityTable">
+          <td>
+            <a [routerLink]="['/invoice-item', invoiceItem.id, 'view']">{{ invoiceItem.id }}</a>
+          </td>
+          <td>{{ invoiceItem.value }}</td>
+          <td>
+            <div *ngIf="invoiceItem.invoice">
+              <a [routerLink]="['/invoice', invoiceItem.invoice?.id, 'view']">{{ invoiceItem.invoice?.id }}</a>
+            </div>
+          </td>
+          <td>
+            <div *ngIf="invoiceItem.item">
+              <a [routerLink]="['/item', invoiceItem.item?.id, 'view']">{{ invoiceItem.item?.id }}</a>
+            </div>
+          </td>
+          <td class="text-right">
+            <div class="btn-group">
+              <button
+                type="submit"
+                [routerLink]="['/invoice-item', invoiceItem.id, 'view']"
+                class="btn btn-info btn-sm"
+                data-cy="entityDetailsButton"
+              >
+                <fa-icon icon="eye"></fa-icon>
+                <span class="d-none d-md-inline" invTranslate="entity.action.view">View</span>
+              </button>
+
+              <button
+                type="submit"
+                [routerLink]="['/invoice-item', invoiceItem.id, 'edit']"
+                class="btn btn-primary btn-sm"
+                data-cy="entityEditButton"
+              >
+                <fa-icon icon="pencil-alt"></fa-icon>
+                <span class="d-none d-md-inline" invTranslate="entity.action.edit">Edit</span>
+              </button>
+
+              <button type="submit" (click)="delete(invoiceItem)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                <fa-icon icon="times"></fa-icon>
+                <span class="d-none d-md-inline" invTranslate="entity.action.delete">Delete</span>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

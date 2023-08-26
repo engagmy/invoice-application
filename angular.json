@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "invoice-application": {
+    "invoice": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -15,7 +15,7 @@
       },
       "root": "",
       "sourceRoot": "src/main/webapp",
-      "prefix": "jhi",
+      "prefix": "inv",
       "architect": {
         "build": {
           "builder": "@angular-builders/custom-webpack:browser",
@@ -26,14 +26,22 @@
             "outputPath": "target/classes/static/",
             "index": "src/main/webapp/index.html",
             "main": "src/main/webapp/main.ts",
-            "polyfills": ["zone.js"],
+            "polyfills": "src/main/webapp/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
               "src/main/webapp/content",
               "src/main/webapp/favicon.ico",
               "src/main/webapp/manifest.webapp",
-              "src/main/webapp/robots.txt"
+              "src/main/webapp/robots.txt",
+              {
+                "glob": "*.{js,css,html,png}",
+                "input": "./node_modules/swagger-ui-dist",
+                "output": "swagger-ui",
+                "ignore": ["**/index.html"]
+              },
+              { "glob": "axios.min.js", "input": "./node_modules/axios/dist", "output": "swagger-ui" },
+              { "glob": "**/*", "input": "src/main/webapp/swagger-ui/", "output": "swagger-ui" }
             ],
             "styles": ["src/main/webapp/content/scss/vendor.scss", "src/main/webapp/content/scss/global.scss"],
             "scripts": []
@@ -76,15 +84,16 @@
         "serve": {
           "builder": "@angular-builders/custom-webpack:dev-server",
           "options": {
-            "browserTarget": "invoice-application:build:development",
+            "browserTarget": "invoice:build:development",
+            "proxyConfig": "./webpack/proxy.conf.js",
             "port": 4200
           },
           "configurations": {
             "production": {
-              "browserTarget": "invoice-application:build:production"
+              "browserTarget": "invoice:build:production"
             },
             "development": {
-              "browserTarget": "invoice-application:build:development"
+              "browserTarget": "invoice:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -98,12 +107,8 @@
       }
     }
   },
+  "defaultProject": "invoice",
   "cli": {
-    "cache": {
-      "enabled": true,
-      "path": "./target/angular/",
-      "environment": "all"
-    },
     "packageManager": "npm"
   }
 }
