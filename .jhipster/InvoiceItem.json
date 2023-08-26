@@ -1,0 +1,28 @@
+{
+  "applications": "*",
+  "dto": "mapstruct",
+  "entityTableName": "invoice_item",
+  "fields": [
+    {
+      "fieldName": "value",
+      "fieldType": "BigDecimal",
+      "fieldValidateRules": ["required"]
+    }
+  ],
+  "name": "InvoiceItem",
+  "relationships": [
+    {
+      "otherEntityName": "invoice",
+      "relationshipName": "invoice",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one"
+    },
+    {
+      "otherEntityName": "item",
+      "relationshipName": "item",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one"
+    }
+  ],
+  "service": "serviceClass"
+}

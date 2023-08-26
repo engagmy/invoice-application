@@ -1,0 +1,21 @@
+{
+  "applications": "*",
+  "dto": "mapstruct",
+  "entityTableName": "invoice",
+  "fields": [
+    {
+      "fieldName": "number",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "value",
+      "fieldType": "BigDecimal",
+      "fieldValidateRules": ["required"]
+    }
+  ],
+  "name": "Invoice",
+  "pagination": "pagination",
+  "relationships": [],
+  "service": "serviceClass"
+}
