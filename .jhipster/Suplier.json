@@ -1,0 +1,24 @@
+{
+  "applications": "*",
+  "dto": "mapstruct",
+  "entityTableName": "suplier",
+  "fields": [
+    {
+      "fieldName": "name",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    }
+  ],
+  "name": "Suplier",
+  "pagination": "pagination",
+  "relationships": [
+    {
+      "otherEntityName": "item",
+      "otherEntityRelationshipName": "supplier",
+      "relationshipName": "item",
+      "relationshipSide": "right",
+      "relationshipType": "many-to-many"
+    }
+  ],
+  "service": "serviceClass"
+}
