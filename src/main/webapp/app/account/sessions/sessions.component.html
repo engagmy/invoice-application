@@ -1,0 +1,37 @@
+<div>
+  <h2 id="session-page-heading" jhiTranslate="sessions.title" [translateValues]="{ username: account.login }" *ngIf="account">
+    جلسات العمل النشطة ل [<strong>{{ account.login }}</strong
+    >]
+  </h2>
+
+  <div class="alert alert-success" *ngIf="success" jhiTranslate="sessions.messages.success">
+    <strong>الجلسة أبطلت!</strong>
+  </div>
+
+  <div class="alert alert-danger" *ngIf="error" jhiTranslate="sessions.messages.error"><strong>حدث خطأ!</strong> تعذر ابطال الجلسة</div>
+
+  <div class="table-responsive">
+    <table class="table table-striped" aria-describedby="session-page-heading">
+      <thead>
+        <tr>
+          <th scope="col" jhiTranslate="sessions.table.ipaddress">IP عنوان</th>
+          <th scope="col" jhiTranslate="sessions.table.useragent">وكيل المستخدم</th>
+          <th scope="col" jhiTranslate="sessions.table.date">تاريخ</th>
+          <th scope="col"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let session of sessions">
+          <td>{{ session.ipAddress }}</td>
+          <td>{{ session.userAgent }}</td>
+          <td>{{ session.tokenDate | date : 'longDate' }}</td>
+          <td>
+            <button type="submit" class="btn btn-primary" (click)="invalidate(session.series)" jhiTranslate="sessions.table.button">
+              إبطال
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
