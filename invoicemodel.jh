@@ -1,11 +1,14 @@
 
-entity Suplier {
+entity Supplier {
 	name String required
 }
 
 entity Item {
 	name String required
-    active Boolean 
+    active Boolean
+}
+
+entity SupplierItem {
 }
 
 entity Invoice {
@@ -22,16 +25,12 @@ entity InvoiceItem {
 relationship ManyToOne {
 	InvoiceItem{invoice} to Invoice
     InvoiceItem{item} to Item
-
-}
-
-// defining multiple oneToOne relationships
-relationship ManyToMany {
-	Item{supplier} to Suplier{item}
+    SupplierItem{supplier} to Supplier
+    SupplierItem{item} to Item
 }
 
 // Set pagination options
-paginate Suplier with pagination
+paginate Supplier with pagination
 paginate Item with pagination
 paginate Invoice with pagination
 
